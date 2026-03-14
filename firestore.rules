@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Submissions: anyone can create, only admin can read/update
+    match /submissions/{submissionId} {
+      allow create: if
+        request.resource.data.keys().hasAll(['email', 'idPhotoUrl', 'verificationType', 'evidenceUrl', 'status', 'expiryDays', 'createdAt']) &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.verificationType in ['lab_report', 'video'] &&
+        request.resource.data.expiryDays in [30, 60, 90];
+
+      // No client read/update/delete — admin uses Firebase Console
+      allow read, update, delete: if false;
+    }
+
+    // Public verification links: anyone can read
+    match /links/{linkId} {
+      allow read: if true;
+      allow write: if false; // only Cloud Function writes
+    }
+
+    // Mail queue: no client access — only Cloud Function writes, extension reads
+    match /mail/{mailId} {
+      allow read, write: if false;
+    }
+  }
+}
