@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "your-firebase-project-id"
-  }
+    "default": "safelink-88497",
+    "production": "safelink-88497"
+  },
+  "targets": {},
+  "etags": {}
 }
