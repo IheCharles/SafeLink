@@ -1,11 +1,6 @@
 import { collection, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import type {
-  Submission,
-  PublicLink,
-  VerificationType,
-  ExpiryDays,
-} from "../types";
+import type { Submission, PublicLink, VerificationType } from "../types";
 
 /**
  * Create a new submission document. Returns the generated document ID.
@@ -15,7 +10,6 @@ export async function createSubmission(data: {
   idPhotoUrl: string;
   verificationType: VerificationType;
   evidenceUrl: string;
-  expiryDays: ExpiryDays;
 }): Promise<string> {
   const colRef = collection(db, "submissions");
   const docRef = doc(colRef);

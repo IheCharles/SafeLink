@@ -30,7 +30,17 @@ export default function StepReview({
           }
         />
         <Row label="Evidence File" value={data.evidence?.name ?? "—"} />
-        <Row label="Link Expiry" value={`${data.expiryDays} days`} />
+      </div>
+
+      <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-800">
+        Your verification link will expire in <strong>3 months</strong>. After
+        that, you'll need to submit updated test results to get a new link.
+      </div>
+
+      <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
+        Once approved, your verification link will be sent to{" "}
+        <strong>{data.email}</strong>. Be sure to check your{" "}
+        <strong>spam/junk folder</strong> if you don't see it in your inbox.
       </div>
 
       {/* Consent */}

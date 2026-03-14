@@ -54,10 +54,15 @@ exports.onSubmissionApproved = functions.firestore
     }
     const submissionId = context.params.submissionId;
     const linkId = (0, nanoid_1.nanoid)(12);
-    const expiryMs = after.expiryDays * 24 * 60 * 60 * 1000;
+    // All links expire after 90 days (3 months)
+    const EXPIRY_DAYS = 90;
+    const expiryMs = EXPIRY_DAYS * 24 * 60 * 60 * 1000;
     const expiresAt = Date.now() + expiryMs;
     // Write public link document
-    await db.collection("links").doc(linkId).set({
+    await db
+        .collection("links")
+        .doc(linkId)
+        .set({
         id: linkId,
         submissionId,
         idPhotoUrl: after.idPhotoUrl,
@@ -69,7 +74,8 @@ exports.onSubmissionApproved = functions.firestore
         createdAt: Date.now(),
     });
     // Determine the base URL from function config or default
-    const baseUrl = functions.config().app?.url ?? `https://${process.env.GCLOUD_PROJECT}.web.app`;
+    const baseUrl = functions.config().app?.url ??
+        `https://${process.env.GCLOUD_PROJECT}.web.app`;
     const verifyUrl = `${baseUrl}/v/${linkId}`;
     const clear = after.overallClear === true;
     const tierLabel = after.verificationType === "lab_report"

@@ -1,7 +1,6 @@
 export type VerificationType = "lab_report" | "video";
 export type TestResultValue = "negative" | "positive";
 export type SubmissionStatus = "pending" | "approved" | "rejected";
-export type ExpiryDays = 30 | 60 | 90;
 
 export interface TestResult {
   testName: string;
@@ -20,7 +19,6 @@ export interface Submission {
   results: TestResult[];
   /** Filled by admin — true means all tests negative */
   overallClear: boolean;
-  expiryDays: ExpiryDays;
   /** Populated by Cloud Function on approval */
   linkId: string | null;
   createdAt: number;
@@ -46,5 +44,4 @@ export interface SubmissionFormData {
   idPhoto: File | null;
   verificationType: VerificationType;
   evidence: File | null;
-  expiryDays: ExpiryDays;
 }

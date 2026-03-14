@@ -23,7 +23,9 @@ export const onSubmissionApproved = functions.firestore
     const submissionId = context.params.submissionId;
     const linkId = nanoid(12);
 
-    const expiryMs = after.expiryDays * 24 * 60 * 60 * 1000;
+    // All links expire after 90 days (3 months)
+    const EXPIRY_DAYS = 90;
+    const expiryMs = EXPIRY_DAYS * 24 * 60 * 60 * 1000;
     const expiresAt = Date.now() + expiryMs;
 
     // Write public link document

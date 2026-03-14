@@ -4,18 +4,13 @@ import { collection, doc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { uploadFile } from "../lib/storage";
 import { createSubmission } from "../lib/firestore";
-import type {
-  SubmissionFormData,
-  VerificationType,
-  ExpiryDays,
-} from "../types";
+import type { SubmissionFormData, VerificationType } from "../types";
 import StepEmail from "../components/submission/StepEmail";
 import StepIdPhoto from "../components/submission/StepIdPhoto";
 import StepEvidence from "../components/submission/StepEvidence";
-import StepExpiry from "../components/submission/StepExpiry";
 import StepReview from "../components/submission/StepReview";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 export default function Submit() {
   const navigate = useNavigate();
@@ -28,7 +23,6 @@ export default function Submit() {
     idPhoto: null,
     verificationType: "lab_report",
     evidence: null,
-    expiryDays: 30,
   });
 
   function update<K extends keyof SubmissionFormData>(
@@ -64,7 +58,6 @@ export default function Submit() {
         idPhotoUrl,
         verificationType: formData.verificationType,
         evidenceUrl,
-        expiryDays: formData.expiryDays,
       });
 
       navigate("/submitted");
@@ -75,7 +68,7 @@ export default function Submit() {
     }
   }
 
-  const stepLabels = ["Email", "ID Photo", "Evidence", "Expiry", "Review"];
+  const stepLabels = ["Email", "ID Photo", "Evidence", "Review"];
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12">
@@ -131,14 +124,6 @@ export default function Submit() {
         />
       )}
       {step === 3 && (
-        <StepExpiry
-          expiryDays={formData.expiryDays}
-          onChange={(d: ExpiryDays) => update("expiryDays", d)}
-          onNext={next}
-          onBack={back}
-        />
-      )}
-      {step === 4 && (
         <StepReview
           data={formData}
           submitting={submitting}

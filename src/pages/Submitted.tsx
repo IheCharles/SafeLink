@@ -16,6 +16,10 @@ export default function Submitted() {
       <p className="mt-2 text-sm text-gray-400">
         This usually takes less than 24 hours.
       </p>
+      <p className="mt-4 text-sm text-gray-500 bg-gray-100 rounded-lg px-4 py-3 inline-block text-left">
+        Your link will be valid for <strong>3 months</strong>. After it expires,
+        you'll need to submit updated results to get a new one.
+      </p>
       <Link
         to="/"
         className="mt-8 inline-block bg-brand-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-brand-700 transition"
