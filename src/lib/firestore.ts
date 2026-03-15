@@ -1,42 +1,43 @@
-import { collection, doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import type { Submission, PublicLink, VerificationType } from "../types";
+import type { Submission, VerificationType } from "../types";
 
 /**
- * Create a new submission document. Returns the generated document ID.
+ * Create a new submission document with a specific ID. Returns the document ID.
  */
-export async function createSubmission(data: {
-  email: string;
-  idPhotoUrl: string;
-  verificationType: VerificationType;
-  evidenceUrl: string;
-}): Promise<string> {
-  const colRef = collection(db, "submissions");
-  const docRef = doc(colRef);
+export async function createSubmission(
+  id: string,
+  data: {
+    email: string;
+    idPhotoUrl: string;
+    verificationType: VerificationType;
+    evidenceUrl: string;
+  },
+): Promise<string> {
+  const docRef = doc(db, "submissions", id);
 
   const submission: Submission = {
     ...data,
     status: "pending",
     results: [],
     overallClear: false,
-    linkId: null,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
 
   await setDoc(docRef, submission);
-  return docRef.id;
+  return id;
 }
 
 /**
- * Fetch a public verification link by its short ID.
+ * Fetch a submission by its document ID.
  * Returns null if not found.
  */
-export async function getPublicLink(
-  linkId: string,
-): Promise<PublicLink | null> {
-  const docRef = doc(db, "links", linkId);
+export async function getSubmission(
+  submissionId: string,
+): Promise<Submission | null> {
+  const docRef = doc(db, "submissions", submissionId);
   const snap = await getDoc(docRef);
   if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() } as PublicLink;
+  return { id: snap.id, ...snap.data() } as Submission;
 }
