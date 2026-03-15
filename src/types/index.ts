@@ -11,6 +11,7 @@ export interface TestResult {
 export interface Submission {
   id?: string;
   email: string;
+  profilePhotoUrl: string;
   idPhotoUrl: string;
   verificationType: VerificationType;
   evidenceUrl: string;
@@ -26,6 +27,7 @@ export interface Submission {
 /** Shape of the multi-step form state before submission */
 export interface SubmissionFormData {
   email: string;
+  profilePhoto: File | null;
   idPhoto: File | null;
   verificationType: VerificationType;
   evidence: File | null;

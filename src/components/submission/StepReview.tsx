@@ -22,6 +22,7 @@ export default function StepReview({
 
       <div className="mt-6 space-y-4 text-sm">
         <Row label="Email" value={data.email} />
+        <Row label="Profile Photo" value={data.profilePhoto?.name ?? "—"} />
         <Row label="ID Photo" value={data.idPhoto?.name ?? "—"} />
         <Row
           label="Evidence Type"

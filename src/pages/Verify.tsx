@@ -64,9 +64,7 @@ export default function Verify() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-amber-50 px-4 text-center">
         <div className="text-5xl">⏳</div>
-        <h1 className="mt-4 text-2xl font-bold text-gray-900">
-          Under Review
-        </h1>
+        <h1 className="mt-4 text-2xl font-bold text-gray-900">Under Review</h1>
         <p className="mt-2 text-gray-600 max-w-sm">
           Your submission is being reviewed. We'll email you once it's been
           verified. This usually takes less than 24 hours.
@@ -134,7 +132,7 @@ export default function Verify() {
           {/* Photo */}
           <div className="flex justify-center">
             <img
-              src={submission.idPhotoUrl}
+              src={submission.profilePhotoUrl}
               alt="Verified person"
               className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
             />
