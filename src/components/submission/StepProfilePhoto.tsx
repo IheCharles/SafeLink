@@ -7,7 +7,12 @@ interface Props {
   onBack: () => void;
 }
 
-export default function StepIdPhoto({ file, onChange, onNext, onBack }: Props) {
+export default function StepProfilePhoto({
+  file,
+  onChange,
+  onNext,
+  onBack,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(
     file ? URL.createObjectURL(file) : null,
@@ -20,13 +25,10 @@ export default function StepIdPhoto({ file, onChange, onNext, onBack }: Props) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-900">
-        Government-Issued ID
-      </h2>
+      <h2 className="text-xl font-bold text-gray-900">Profile Photo</h2>
       <p className="mt-1 text-sm text-gray-500">
-        Upload a clear photo of the front of your government-issued ID (driver's
-        license, passport, etc.). This is used to verify your identity and will
-        not appear on your verification link.
+        Upload a clear photo of your face. This will be displayed on your
+        verification link so others can confirm it's you.
       </p>
 
       <input
@@ -49,10 +51,10 @@ export default function StepIdPhoto({ file, onChange, onNext, onBack }: Props) {
           <img
             src={preview}
             alt="Preview"
-            className="mx-auto max-h-48 rounded-lg"
+            className="mx-auto w-32 h-32 rounded-full object-cover"
           />
         ) : (
-          <span className="text-gray-500">Click to select a photo</span>
+          <span className="text-gray-500">Click to upload a face photo</span>
         )}
       </button>
 

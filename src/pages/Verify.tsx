@@ -134,7 +134,7 @@ export default function Verify() {
           {/* Photo */}
           <div className="flex justify-center">
             <img
-              src={submission.idPhotoUrl}
+              src={submission.profilePhotoUrl}
               alt="Verified person"
               className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
             />
