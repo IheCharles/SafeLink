@@ -19,23 +19,8 @@ export interface Submission {
   results: TestResult[];
   /** Filled by admin — true means all tests negative */
   overallClear: boolean;
-  /** Populated by Cloud Function on approval */
-  linkId: string | null;
   createdAt: number;
   updatedAt: number;
-}
-
-/** Document in the `links` collection — publicly readable, powers /v/:linkId */
-export interface PublicLink {
-  id: string;
-  submissionId: string;
-  idPhotoUrl: string;
-  verificationType: VerificationType;
-  results: TestResult[];
-  overallClear: boolean;
-  expiresAt: number;
-  active: boolean;
-  createdAt: number;
 }
 
 /** Shape of the multi-step form state before submission */

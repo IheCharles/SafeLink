@@ -1,36 +1,39 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getPublicLink } from "../lib/firestore";
-import type { PublicLink } from "../types";
+import { getSubmission } from "../lib/firestore";
+import type { Submission } from "../types";
 import TierBadge from "../components/verification/TierBadge";
 import ResultCard from "../components/verification/ResultCard";
 
 type State =
   | { kind: "loading" }
   | { kind: "not-found" }
-  | { kind: "expired" }
-  | { kind: "ready"; link: PublicLink };
+  | { kind: "pending" }
+  | { kind: "rejected" }
+  | { kind: "approved"; submission: Submission };
 
 export default function Verify() {
-  const { linkId } = useParams<{ linkId: string }>();
+  const { submissionId } = useParams<{ submissionId: string }>();
   const [state, setState] = useState<State>({ kind: "loading" });
 
   useEffect(() => {
-    if (!linkId) {
+    if (!submissionId) {
       setState({ kind: "not-found" });
       return;
     }
 
-    getPublicLink(linkId).then((link) => {
-      if (!link) {
+    getSubmission(submissionId).then((sub) => {
+      if (!sub) {
         setState({ kind: "not-found" });
-      } else if (!link.active || link.expiresAt < Date.now()) {
-        setState({ kind: "expired" });
+      } else if (sub.status === "rejected") {
+        setState({ kind: "rejected" });
+      } else if (sub.status === "pending") {
+        setState({ kind: "pending" });
       } else {
-        setState({ kind: "ready", link });
+        setState({ kind: "approved", submission: sub });
       }
     });
-  }, [linkId]);
+  }, [submissionId]);
 
   if (state.kind === "loading") {
     return (
@@ -43,9 +46,9 @@ export default function Verify() {
   if (state.kind === "not-found") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Link Not Found</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Not Found</h1>
         <p className="mt-2 text-gray-500">
-          This verification link doesn't exist. Please check the URL.
+          This link doesn't exist. Please check the URL.
         </p>
         <Link
           to="/"
@@ -57,13 +60,19 @@ export default function Verify() {
     );
   }
 
-  if (state.kind === "expired") {
+  if (state.kind === "pending") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4 text-center">
-        <div className="text-5xl">⏱</div>
-        <h1 className="mt-4 text-2xl font-bold text-gray-900">Link Expired</h1>
-        <p className="mt-2 text-gray-500">
-          This verification link has expired. The owner can request a new one.
+      <div className="min-h-screen flex flex-col items-center justify-center bg-amber-50 px-4 text-center">
+        <div className="text-5xl">⏳</div>
+        <h1 className="mt-4 text-2xl font-bold text-gray-900">
+          Under Review
+        </h1>
+        <p className="mt-2 text-gray-600 max-w-sm">
+          Your submission is being reviewed. We'll email you once it's been
+          verified. This usually takes less than 24 hours.
+        </p>
+        <p className="mt-4 text-sm text-gray-400">
+          Bookmark this page to check back anytime.
         </p>
         <Link
           to="/"
@@ -75,8 +84,30 @@ export default function Verify() {
     );
   }
 
-  const { link } = state;
-  const clear = link.overallClear;
+  if (state.kind === "rejected") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-red-50 px-4 text-center">
+        <div className="text-5xl">✕</div>
+        <h1 className="mt-4 text-2xl font-bold text-gray-900">
+          Verification Denied
+        </h1>
+        <p className="mt-2 text-gray-600 max-w-sm">
+          We were unable to verify your submission. You can submit again with
+          clearer documentation.
+        </p>
+        <Link
+          to="/submit"
+          className="mt-6 inline-block bg-brand-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-brand-700 transition"
+        >
+          Try Again
+        </Link>
+      </div>
+    );
+  }
+
+  // Approved — show color-coded results
+  const { submission } = state;
+  const clear = submission.overallClear;
 
   const bg = clear ? "bg-green-50" : "bg-red-50";
   const border = clear ? "border-green-300" : "border-red-300";
@@ -103,7 +134,7 @@ export default function Verify() {
           {/* Photo */}
           <div className="flex justify-center">
             <img
-              src={link.idPhotoUrl}
+              src={submission.idPhotoUrl}
               alt="Verified person"
               className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
             />
@@ -111,12 +142,12 @@ export default function Verify() {
 
           {/* Tier badge */}
           <div className="flex justify-center">
-            <TierBadge type={link.verificationType} />
+            <TierBadge type={submission.verificationType} />
           </div>
 
           {/* Results */}
           <div className="space-y-2">
-            {link.results.map((r) => (
+            {submission.results.map((r) => (
               <ResultCard key={r.testName} result={r} clear={clear} />
             ))}
           </div>
@@ -125,15 +156,7 @@ export default function Verify() {
           <div className="text-xs text-gray-400 text-center space-y-1">
             <p>
               Verified on{" "}
-              {new Date(link.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-            <p>
-              Expires{" "}
-              {new Date(link.expiresAt).toLocaleDateString("en-US", {
+              {new Date(submission.updatedAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

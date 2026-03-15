@@ -53,14 +53,14 @@ export default function Submit() {
         uploadFile(submissionId, "evidence", formData.evidence),
       ]);
 
-      await createSubmission({
+      const subId = await createSubmission(submissionId, {
         email: formData.email,
         idPhotoUrl,
         verificationType: formData.verificationType,
         evidenceUrl,
       });
 
-      navigate("/submitted");
+      navigate(`/${subId}`);
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
