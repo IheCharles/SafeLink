@@ -7,10 +7,12 @@ import { createSubmission } from "../lib/firestore";
 import type { SubmissionFormData, VerificationType } from "../types";
 import StepEmail from "../components/submission/StepEmail";
 import StepProfilePhoto from "../components/submission/StepProfilePhoto";
+import StepProfilePhoto from "../components/submission/StepProfilePhoto";
 import StepIdPhoto from "../components/submission/StepIdPhoto";
 import StepEvidence from "../components/submission/StepEvidence";
 import StepReview from "../components/submission/StepReview";
 
+const TOTAL_STEPS = 5;
 const TOTAL_STEPS = 5;
 
 export default function Submit() {
@@ -21,6 +23,7 @@ export default function Submit() {
 
   const [formData, setFormData] = useState<SubmissionFormData>({
     email: "",
+    profilePhoto: null,
     profilePhoto: null,
     idPhoto: null,
     verificationType: "lab_report",
@@ -53,12 +56,15 @@ export default function Submit() {
 
       const [profilePhotoUrl, idPhotoUrl, evidenceUrl] = await Promise.all([
         uploadFile(submissionId, "profile-photo", formData.profilePhoto),
+      const [profilePhotoUrl, idPhotoUrl, evidenceUrl] = await Promise.all([
+        uploadFile(submissionId, "profile-photo", formData.profilePhoto),
         uploadFile(submissionId, "id-photo", formData.idPhoto),
         uploadFile(submissionId, "evidence", formData.evidence),
       ]);
 
       const subId = await createSubmission(submissionId, {
         email: formData.email,
+        profilePhotoUrl,
         profilePhotoUrl,
         idPhotoUrl,
         verificationType: formData.verificationType,
@@ -125,6 +131,14 @@ export default function Submit() {
         />
       )}
       {step === 2 && (
+        <StepProfilePhoto
+          file={formData.profilePhoto}
+          onChange={(f) => update("profilePhoto", f)}
+          onNext={next}
+          onBack={back}
+        />
+      )}
+      {step === 2 && (
         <StepIdPhoto
           file={formData.idPhoto}
           onChange={(f) => update("idPhoto", f)}
@@ -132,6 +146,7 @@ export default function Submit() {
           onBack={back}
         />
       )}
+      {step === 3 && (
       {step === 3 && (
         <StepEvidence
           verificationType={formData.verificationType}
@@ -142,6 +157,7 @@ export default function Submit() {
           onBack={back}
         />
       )}
+      {step === 4 && (
       {step === 4 && (
         <StepReview
           data={formData}

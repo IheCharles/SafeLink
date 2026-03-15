@@ -24,7 +24,10 @@ export default function StepIdPhoto({ file, onChange, onNext, onBack }: Props) {
       <p className="mt-1 text-sm text-gray-500">
         Upload a clear photo of the front of your government-issued ID (driver's
         license, passport, etc.). This is used to verify your identity and will
-        not appear on your verification link.
+        not appear on your verification link. Upload a clear photo of the front
+        of your government-issued ID (driver's license, passport, etc.). This is
+        used to verify your identity and will not appear on your verification
+        link.
       </p>
 
       <input
