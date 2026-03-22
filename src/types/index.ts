@@ -1,4 +1,4 @@
-export type VerificationType = "lab_report" | "video";
+export type VerificationType = "lab_report" | "video" | "link";
 export type TestResultValue = "negative" | "positive";
 export type SubmissionStatus = "pending" | "approved" | "rejected";
 
@@ -11,7 +11,6 @@ export interface TestResult {
 export interface Submission {
   id?: string;
   email: string;
-  idPhotoUrl: string;
   verificationType: VerificationType;
   evidenceUrl: string;
   status: SubmissionStatus;
@@ -26,7 +25,7 @@ export interface Submission {
 /** Shape of the multi-step form state before submission */
 export interface SubmissionFormData {
   email: string;
-  idPhoto: File | null;
   verificationType: VerificationType;
   evidence: File | null;
+  evidenceLink: string;
 }

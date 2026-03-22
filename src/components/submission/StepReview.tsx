@@ -22,14 +22,24 @@ export default function StepReview({
 
       <div className="mt-6 space-y-4 text-sm">
         <Row label="Email" value={data.email} />
-        <Row label="ID Photo" value={data.idPhoto?.name ?? "—"} />
         <Row
           label="Evidence Type"
           value={
-            data.verificationType === "lab_report" ? "Lab Report ✓✓" : "Video ✓"
+            data.verificationType === "lab_report"
+              ? "Lab Report ✓✓"
+              : data.verificationType === "link"
+                ? "Link ✓"
+                : "Video ✓"
           }
         />
-        <Row label="Evidence File" value={data.evidence?.name ?? "—"} />
+        <Row
+          label="Evidence"
+          value={
+            data.verificationType === "link"
+              ? data.evidenceLink || "—"
+              : data.evidence?.name ?? "—"
+          }
+        />
       </div>
 
       <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-800">

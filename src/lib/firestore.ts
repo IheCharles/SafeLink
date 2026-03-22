@@ -9,7 +9,6 @@ export async function createSubmission(
   id: string,
   data: {
     email: string;
-    idPhotoUrl: string;
     verificationType: VerificationType;
     evidenceUrl: string;
   },

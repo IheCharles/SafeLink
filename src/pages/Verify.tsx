@@ -111,7 +111,6 @@ export default function Verify() {
 
   const bg = clear ? "bg-green-50" : "bg-red-50";
   const border = clear ? "border-green-300" : "border-red-300";
-  const ringColor = clear ? "ring-green-400" : "ring-red-400";
 
   return (
     <div className={`min-h-screen ${bg} flex flex-col items-center py-12 px-4`}>
@@ -131,15 +130,6 @@ export default function Verify() {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Photo */}
-          <div className="flex justify-center">
-            <img
-              src={submission.idPhotoUrl}
-              alt="Verified person"
-              className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
-            />
-          </div>
-
           {/* Tier badge */}
           <div className="flex justify-center">
             <TierBadge type={submission.verificationType} />

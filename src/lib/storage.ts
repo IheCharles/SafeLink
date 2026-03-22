@@ -7,7 +7,7 @@ import { storage } from './firebase';
  */
 export async function uploadFile(
   submissionId: string,
-  folder: 'id-photo' | 'evidence',
+  folder: 'evidence',
   file: File
 ): Promise<string> {
   const ext = file.name.split('.').pop() ?? 'bin';
