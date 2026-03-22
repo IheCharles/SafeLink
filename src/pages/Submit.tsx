@@ -6,10 +6,11 @@ import { uploadFile } from "../lib/storage";
 import { createSubmission } from "../lib/firestore";
 import type { SubmissionFormData, VerificationType } from "../types";
 import StepEmail from "../components/submission/StepEmail";
+import StepPhoto from "../components/submission/StepPhoto";
 import StepEvidence from "../components/submission/StepEvidence";
 import StepReview from "../components/submission/StepReview";
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
 export default function Submit() {
   const navigate = useNavigate();
@@ -19,9 +20,10 @@ export default function Submit() {
 
   const [formData, setFormData] = useState<SubmissionFormData>({
     email: "",
+    photo: null,
+    photoLink: "",
     verificationType: "lab_report",
     evidence: null,
-    evidenceLink: "",
   });
 
   function update<K extends keyof SubmissionFormData>(
@@ -39,9 +41,8 @@ export default function Submit() {
   }
 
   async function handleSubmit() {
-    const isLink = formData.verificationType === "link";
-    if (!isLink && !formData.evidence) return;
-    if (isLink && !formData.evidenceLink) return;
+    if (!formData.evidence) return;
+    if (!formData.photo && !formData.photoLink) return;
 
     setSubmitting(true);
     setError(null);
@@ -49,15 +50,22 @@ export default function Submit() {
     try {
       const submissionId = doc(collection(db, "submissions")).id;
 
-      let evidenceUrl: string;
-      if (isLink) {
-        evidenceUrl = formData.evidenceLink;
+      let photoUrl: string;
+      if (formData.photoLink) {
+        photoUrl = formData.photoLink;
       } else {
-        evidenceUrl = await uploadFile(submissionId, "evidence", formData.evidence!);
+        photoUrl = await uploadFile(submissionId, "photo", formData.photo!);
       }
+
+      const evidenceUrl = await uploadFile(
+        submissionId,
+        "evidence",
+        formData.evidence,
+      );
 
       const subId = await createSubmission(submissionId, {
         email: formData.email,
+        photoUrl,
         verificationType: formData.verificationType,
         evidenceUrl,
       });
@@ -70,7 +78,7 @@ export default function Submit() {
     }
   }
 
-  const stepLabels = ["Email", "Evidence", "Review"];
+  const stepLabels = ["Email", "Photo", "Evidence", "Review"];
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12">
@@ -108,18 +116,26 @@ export default function Submit() {
         />
       )}
       {step === 1 && (
-        <StepEvidence
-          verificationType={formData.verificationType}
-          file={formData.evidence}
-          evidenceLink={formData.evidenceLink}
-          onTypeChange={(t: VerificationType) => update("verificationType", t)}
-          onFileChange={(f) => update("evidence", f)}
-          onLinkChange={(v) => update("evidenceLink", v)}
+        <StepPhoto
+          file={formData.photo}
+          photoLink={formData.photoLink}
+          onFileChange={(f) => update("photo", f)}
+          onLinkChange={(v) => update("photoLink", v)}
           onNext={next}
           onBack={back}
         />
       )}
       {step === 2 && (
+        <StepEvidence
+          verificationType={formData.verificationType}
+          file={formData.evidence}
+          onTypeChange={(t: VerificationType) => update("verificationType", t)}
+          onFileChange={(f) => update("evidence", f)}
+          onNext={next}
+          onBack={back}
+        />
+      )}
+      {step === 3 && (
         <StepReview
           data={formData}
           submitting={submitting}

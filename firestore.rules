@@ -6,9 +6,9 @@ service cloud.firestore {
     // Submissions: anyone can create and read, only admin can update
     match /submissions/{submissionId} {
       allow create: if
-        request.resource.data.keys().hasAll(['email', 'verificationType', 'evidenceUrl', 'status', 'createdAt']) &&
+        request.resource.data.keys().hasAll(['email', 'photoUrl', 'verificationType', 'evidenceUrl', 'status', 'createdAt']) &&
         request.resource.data.status == 'pending' &&
-        request.resource.data.verificationType in ['lab_report', 'video', 'link'];
+        request.resource.data.verificationType in ['lab_report', 'video'];
 
       allow read: if true;
       allow update, delete: if false;

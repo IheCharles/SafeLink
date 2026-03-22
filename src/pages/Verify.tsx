@@ -111,6 +111,7 @@ export default function Verify() {
 
   const bg = clear ? "bg-green-50" : "bg-red-50";
   const border = clear ? "border-green-300" : "border-red-300";
+  const ringColor = clear ? "ring-green-400" : "ring-red-400";
 
   return (
     <div className={`min-h-screen ${bg} flex flex-col items-center py-12 px-4`}>
@@ -130,6 +131,32 @@ export default function Verify() {
         </div>
 
         <div className="p-6 space-y-6">
+          {/* Photo or profile link */}
+          <div className="flex justify-center">
+            {submission.photoUrl.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i) ? (
+              <img
+                src={submission.photoUrl}
+                alt="Verified person"
+                className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
+              />
+            ) : submission.photoUrl.startsWith("http") ? (
+              <a
+                href={submission.photoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-28 h-28 rounded-full bg-brand-100 ring-4 ${ringColor} flex items-center justify-center hover:bg-brand-200 transition`}
+              >
+                <span className="text-brand-700 text-xs font-medium text-center px-2">View Profile</span>
+              </a>
+            ) : (
+              <img
+                src={submission.photoUrl}
+                alt="Verified person"
+                className={`w-28 h-28 rounded-full object-cover ring-4 ${ringColor}`}
+              />
+            )}
+          </div>
+
           {/* Tier badge */}
           <div className="flex justify-center">
             <TierBadge type={submission.verificationType} />
